@@ -1,0 +1,39 @@
+{
+    "chainId": 137,
+    "contracts": [
+        {
+            "address": "0xe29c9a493ede58028163ab04215e18a8acd0472c",
+            "contractName": "CraftHelper",
+            "selectors": {
+                "0xb60099b7": {
+                    "erc20OfInterest": [],
+                    "method": "craft",
+                    "plugin": "Cometh"
+		        }
+	        }
+	    },
+        {
+            "address": "0x91197719be34440a3bd0415fe293f4c19653a277",
+            "contractName": "GrindHelper",
+            "selectors": {
+                "0x54506e92": {
+                    "erc20OfInterest": [],
+                    "method": "grind",
+                    "plugin": "Cometh"
+		        }
+	        }
+	    },
+        {
+            "address": "0x9c25ee0f938122a504be82189536df74687858e4",
+            "contractName": "Items",
+            "selectors": {
+                "0x1e9a6950": {
+                    "erc20OfInterest": [],
+                    "method": "redeem",
+                    "plugin": "Cometh"
+		        }
+	        }
+	    }
+    ],
+    "name": "Cometh"
+}
