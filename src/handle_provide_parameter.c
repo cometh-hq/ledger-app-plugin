@@ -1,5 +1,8 @@
 #include "cometh_plugin.h"
 
+const uint8_t BOOSTER_CARD_1[INT256_LENGTH] = { 0x00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2 };
+const uint8_t BOOSTER_CARD_5[INT256_LENGTH] = { 0x00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1 };
+
 static void handle_beneficiary(ethPluginProvideParameter_t *msg, context_t *context) {
     copy_address(context->beneficiary, msg->parameter, sizeof(context->beneficiary));
     printf_hex_array("BENEFICIARY: ", ADDRESS_LENGTH, context->beneficiary);
@@ -12,6 +15,9 @@ static void handle_craft(ethPluginProvideParameter_t *msg, context_t *context) {
         }
         context->go_to_offset = false;
     }
+
+    PRINTF("[handle_craft] next_param=%d\n", context->next_param);
+
     switch (context->next_param) {
         case BENEFICIARY: // to
             handle_beneficiary(msg, context);
@@ -19,7 +25,15 @@ static void handle_craft(ethPluginProvideParameter_t *msg, context_t *context) {
             //context->go_to_offset = true;
             break;
         case CRAFT_RECIPE:  // recipeId
-            memcpy(context->recipe_id, msg->parameter, INT256_LENGTH);
+            // map recipeId to number of cards in the booster pack
+            if (memcmp(msg->parameter, BOOSTER_CARD_5, INT256_LENGTH) == 0) {
+                context->booster_card_count = 5;
+            } else if (memcmp(msg->parameter, BOOSTER_CARD_1, INT256_LENGTH) == 0) {
+                context->booster_card_count = 1;
+            } else {
+                PRINTF("Unknown recipe: %d\n", msg->parameter);
+                msg->result = ETH_PLUGIN_RESULT_ERROR;
+            }
             context->next_param = NONE;
             break;
         case NONE:
@@ -43,14 +57,8 @@ static void handle_redeem(ethPluginProvideParameter_t *msg, context_t *context) 
     PRINTF("[handle_redeem] next_param=%d\n", context->next_param);
 
     switch (context->next_param) {
-        /*
-        case REDEEM_LOOTBOX:
-            memcpy(context->lootbox_id, msg->parameter, INT256_LENGTH);
-            context->next_param = NONE;
-            break;
-        */
         case BENEFICIARY: // to
-            copy_address(context->beneficiary, msg->parameter, sizeof(context->beneficiary));
+            handle_beneficiary(msg, context);
             context->next_param = NONE;
             break;
         case NONE:
@@ -77,7 +85,7 @@ static void handle_grind(ethPluginProvideParameter_t *msg, context_t *context) {
             context->go_to_offset = true;
             break;
         case CRAFT_RECIPE:  // recipeId
-            memcpy(context->recipe_id, msg->parameter, INT256_LENGTH);
+            //memcpy(context->recipe_id, msg->parameter, INT256_LENGTH);
             context->next_param = NONE;
             break;
         case NONE:

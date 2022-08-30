@@ -6,10 +6,10 @@ void handle_finalize(void *parameters) {
 
     switch (context->selectorIndex) {
         case CRAFT:
-            msg->numScreens = 2; // TODO: edit
+            msg->numScreens = 2; // beneficiary + number of cards in the booster
             break;
         case REDEEM:
-            msg->numScreens = 1; // beneficiary screen
+            msg->numScreens = 1; // beneficiary
             break;
         case GRIND:
             msg->numScreens = 2; // TODO: edit

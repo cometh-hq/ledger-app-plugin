@@ -47,8 +47,9 @@ typedef struct context_t {
     // For display.
     //uint8_t lootbox_id[INT256_LENGTH];
     //uint8_t amount_received[INT256_LENGTH];
-    uint8_t recipe_id[INT256_LENGTH];
+    //uint8_t recipe_id[INT256_LENGTH];
     uint8_t beneficiary[ADDRESS_LENGTH];
+    uint8_t booster_card_count;
 
     char ticker[MAX_TICKER_LEN];
     uint8_t token_found;

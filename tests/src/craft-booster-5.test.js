@@ -11,25 +11,21 @@ const testDirSuffix = "craft_booster_5"; // <= directory to compare device snaps
 const signedPlugin = false;
 
 const devices = [
-  /*
   {
       name: "nanos",
       label: "Nano S",
-      steps: 5, // <= Define the number of steps for this test case and this device
+      steps: 6 + 2, // <= Define the number of steps for this test case and this device
   },
-  */
   {
       name: "nanox",
       label: "Nano X",
-      steps: 2 + 2, // <= Define the number of steps for this test case and this device
+      steps: 6, // <= Define the number of steps for this test case and this device
   },
-  /*
   {
       name: "nanosp",
       label: "Nano S+",
-      steps: 5, // <= Define the number of steps for this test case and this device
+      steps: 6, // <= Define the number of steps for this test case and this device
   },
-  */
 ];
 
 // https://polygonscan.com/tx/0xaf9b0787ef2b37836402bb0ea04219824820396438c600efbc0c66849e97997c
