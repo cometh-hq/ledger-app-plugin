@@ -50,7 +50,7 @@ void handle_init_contract(void *parameters) {
             context->next_param = BENEFICIARY;
             break;
         case GRIND:
-            context->next_param = BENEFICIARY;
+            context->next_param = ITEM_ID;
             break;
         // Keep this
         default:

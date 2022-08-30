@@ -78,14 +78,12 @@ static void handle_grind(ethPluginProvideParameter_t *msg, context_t *context) {
         }
         context->go_to_offset = false;
     }
+    
+    PRINTF("[handle_grind] next_param=%d\n", context->next_param);
+
     switch (context->next_param) {
-        case BENEFICIARY: // to
-            copy_address(context->beneficiary, msg->parameter, sizeof(context->beneficiary));
-            context->next_param = CRAFT_RECIPE;
-            context->go_to_offset = true;
-            break;
-        case CRAFT_RECIPE:  // recipeId
-            //memcpy(context->recipe_id, msg->parameter, INT256_LENGTH);
+        case ITEM_ID:
+            memcpy(context->item_id, msg->parameter, INT256_LENGTH);
             context->next_param = NONE;
             break;
         case NONE:

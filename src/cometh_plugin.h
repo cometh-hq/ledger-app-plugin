@@ -29,16 +29,9 @@ typedef enum {
     CRAFT_RECIPE,
     //REDEEM_LOOTBOX,
     BENEFICIARY,
+    ITEM_ID,
     NONE,
 } parameter;
-
-typedef enum {
-    CRAFT_BOOSTER_SCREEN,
-    //REDEEM_SCREEN,
-    BENEFICIARY_SCREEN,
-    AMOUNT_SCREEN,
-    ERROR,
-} screens_t;
 
 extern const uint32_t COMETH_SELECTORS[NUM_SELECTORS];
 
@@ -50,6 +43,7 @@ typedef struct context_t {
     //uint8_t recipe_id[INT256_LENGTH];
     uint8_t beneficiary[ADDRESS_LENGTH];
     uint8_t booster_card_count;
+    uint8_t item_id[INT256_LENGTH];
 
     char ticker[MAX_TICKER_LEN];
     uint8_t token_found;

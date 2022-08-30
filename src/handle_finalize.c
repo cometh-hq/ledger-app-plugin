@@ -12,7 +12,7 @@ void handle_finalize(void *parameters) {
             msg->numScreens = 1; // beneficiary
             break;
         case GRIND:
-            msg->numScreens = 2; // TODO: edit
+            msg->numScreens = 1; // item id
             break;
     }
 
