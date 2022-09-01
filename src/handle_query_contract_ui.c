@@ -37,28 +37,11 @@ static void set_item_id_ui(ethQueryContractUI_t *msg, const context_t *context) 
     amountToString(context->item_id, sizeof(context->item_id), 0, "", msg->msg, msg->msgLength);
 }
 
-/*
-// Set UI for "Receive" screen.
-static void set_receive_ui(ethQueryContractUI_t *msg, const context_t *context) {
-    strlcpy(msg->title, "Receive Min.", msg->titleLength);
-
-    uint8_t decimals = context->decimals;
-    const char *ticker = context->ticker;
-
-    // If the token look up failed, use the default network ticker along with the default decimals.
-    if (!context->token_found) {
-        decimals = WEI_TO_ETHER;
-        ticker = msg->network_ticker;
-    }
-
-    amountToString(context->amount_received,
-                   sizeof(context->amount_received),
-                   decimals,
-                   ticker,
-                   msg->msg,
-                   msg->msgLength);
+// Set UI for Game ID
+static void set_game_id_ui(ethQueryContractUI_t *msg, const context_t *context) {
+    strlcpy(msg->title, "Game ID", msg->titleLength);
+    strlcpy(msg->msg, context->game_id, msg->msgLength);
 }
-*/
 
 void handle_query_contract_ui(void *parameters) {
     ethQueryContractUI_t *msg = (ethQueryContractUI_t *) parameters;
@@ -91,6 +74,12 @@ void handle_query_contract_ui(void *parameters) {
             switch (msg->screenIndex) {
                 case 0:
                     set_item_id_ui(msg, context);
+                    return;
+            }
+        case GET_REWARD:
+            switch (msg->screenIndex) {
+                case 0:
+                    set_game_id_ui(msg, context);
                     return;
             }
     }

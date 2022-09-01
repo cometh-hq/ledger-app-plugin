@@ -96,6 +96,45 @@ static void handle_grind(ethPluginProvideParameter_t *msg, context_t *context) {
     }
 }
 
+static void handle_get_reward(ethPluginProvideParameter_t *msg, context_t *context) {
+    PRINTF("[handle_get_reward] next_param=%d\n", context->next_param);
+
+    if (context->go_to_offset) {
+        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
+            return;
+        }
+        context->go_to_offset = false;
+    }
+
+    /*
+    bytes32 id;
+    address shipAddress;
+    address player1Address;
+    uint256 player1ShipId;
+    address player2Address;
+    uint256 player2ShipId;
+    address winner;
+    */
+
+    switch (context->next_param) {
+        case GAME_STRUCT_OFFSET:
+            memcpy(context->game_id, msg->parameter, INT256_LENGTH);
+            context->next_param = GAME_ID;
+            break;
+        case GAME_ID:
+            memcpy(context->game_id, msg->parameter, INT256_LENGTH);
+            context->next_param = NONE;
+            break;
+        case NONE:
+            break;
+        // Keep this
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 void handle_provide_parameter(void *parameters) {
     ethPluginProvideParameter_t *msg = (ethPluginProvideParameter_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
@@ -133,6 +172,9 @@ void handle_provide_parameter(void *parameters) {
                 break;
             case GRIND:
                 handle_grind(msg, context);
+                break;
+            case GET_REWARD:
+                handle_get_reward(msg, context);
                 break;
             default:
                 PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

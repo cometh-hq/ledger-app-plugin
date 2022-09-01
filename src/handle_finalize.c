@@ -14,6 +14,9 @@ void handle_finalize(void *parameters) {
         case GRIND:
             msg->numScreens = 1; // item id
             break;
+        case GET_REWARD:
+            msg->numScreens = 1; // game id
+            break;
     }
 
     // If the beneficiary is NOT the sender, we will need an additional screen to display it.

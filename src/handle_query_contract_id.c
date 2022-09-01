@@ -17,8 +17,11 @@ void handle_query_contract_id(void *parameters) {
         case GRIND:
             strlcpy(msg->version, "Grind", msg->versionLength);
             break;
+        case GET_REWARD:
+            strlcpy(msg->version, "Get Reward", msg->versionLength);
+            break;
         default:
-            PRINTF("Selector Index :%d not supported\n", context->selectorIndex);
+            PRINTF("Selector Index: %d not supported\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;
             return;
     }

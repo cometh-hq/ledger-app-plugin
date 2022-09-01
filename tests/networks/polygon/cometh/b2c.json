@@ -33,7 +33,18 @@
                     "plugin": "Cometh"
 		        }
 	        }
-	    }
+	    },
+        {
+            "address": "0xb44e1a7fee110f4af6c1b6d2c5ef324c5920f7d2",
+            "contractName": "BattleGameV2",
+            "selectors": {
+                "0x6363e882": {
+                    "erc20OfInterest": [],
+                    "method": "registerAndRewardGameWithSignature",
+                    "plugin": "Cometh"
+		        }
+	        }
+        }
     ],
     "name": "Cometh"
 }

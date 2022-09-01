@@ -5,13 +5,13 @@
 #include "eth_plugin_interface.h"
 #include "debug_write.h"
 
-
 // Number of selectors defined in this plugin. Should match the enum `selector_t`.
-// EDIT THIS: Put in the number of selectors your plugin is going to support.
-#define NUM_SELECTORS 3
+#define NUM_SELECTORS 4
 
 // Name of the plugin.
 #define PLUGIN_NAME "Cometh"
+
+#define PARAMETER_LENGTH     32
 
 // Plugin uses 0x00000 as a dummy address to reprecent ETH.
 extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
@@ -22,14 +22,16 @@ typedef enum {
     CRAFT,
     REDEEM,
     GRIND,
+    GET_REWARD,
 } selector_t;
 
 // Enumeration used to parse the smart contract data.
 typedef enum {
-    CRAFT_RECIPE,
-    //REDEEM_LOOTBOX,
     BENEFICIARY,
+    CRAFT_RECIPE,
     ITEM_ID,
+    GAME_STRUCT_OFFSET,
+    GAME_ID,
     NONE,
 } parameter;
 
@@ -44,6 +46,7 @@ typedef struct context_t {
     uint8_t beneficiary[ADDRESS_LENGTH];
     uint8_t booster_card_count;
     uint8_t item_id[INT256_LENGTH];
+    char game_id[INT256_LENGTH];
 
     char ticker[MAX_TICKER_LEN];
     uint8_t token_found;

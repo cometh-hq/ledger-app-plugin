@@ -52,6 +52,9 @@ void handle_init_contract(void *parameters) {
         case GRIND:
             context->next_param = ITEM_ID;
             break;
+        case GET_REWARD:
+            context->next_param = GAME_STRUCT_OFFSET;
+            break;
         // Keep this
         default:
             PRINTF("Missing selectorIndex: %d\n", context->selectorIndex);
