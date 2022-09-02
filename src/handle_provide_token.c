@@ -6,6 +6,7 @@
 void handle_provide_token(void *parameters) {
     ethPluginProvideInfo_t *msg = (ethPluginProvideInfo_t *) parameters;
     context_t *context = (context_t *) msg->pluginContext;
+    PRINTF("Cometh plugin provide token: 0x%p, 0x%p\n", msg->item1, msg->item2);
 
     if (msg->item1) {
         // The Ethereum App found the information for the requested token!

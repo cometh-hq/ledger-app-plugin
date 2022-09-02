@@ -1,8 +1,8 @@
 #include "cometh_plugin.h"
 
-// Set UI for "Beneficiary" screen.
-static void set_beneficiary_ui(ethQueryContractUI_t *msg, context_t *context) {
-    strlcpy(msg->title, "Beneficiary", msg->titleLength);
+// Set UI for address screen.
+static void set_address_ui(char* title, ethQueryContractUI_t *msg, context_t *context) {
+    strlcpy(msg->title, title, msg->titleLength);
 
     // Prefix the address with `0x`.
     msg->msg[0] = '0';
@@ -15,7 +15,7 @@ static void set_beneficiary_ui(ethQueryContractUI_t *msg, context_t *context) {
     // Get the string representation of the address stored in `context->beneficiary`. Put it in
     // `msg->msg`.
     getEthAddressStringFromBinary(
-        context->beneficiary,
+        context->address,
         msg->msg + 2,  // +2 here because we've already prefixed with '0x'.
         msg->pluginSharedRW->sha3,
         chainid);
@@ -34,13 +34,53 @@ static void set_craft_booster_ui(ethQueryContractUI_t *msg, const context_t *con
 // Set UI for Item ID
 static void set_item_id_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Card ID", msg->titleLength);
-    amountToString(context->item_id, sizeof(context->item_id), 0, "", msg->msg, msg->msgLength);
+    amountToString(context->uint256_one, INT256_LENGTH, 0, "", msg->msg, msg->msgLength);
 }
 
 // Set UI for Game ID
 static void set_game_id_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Game ID", msg->titleLength);
-    strlcpy(msg->msg, context->game_id, msg->msgLength);
+    strlcpy(msg->msg, context->uint256_one, msg->msgLength);
+}
+
+// Set UI for Rental offer nonce
+static void set_rental_offer_bundle_size_ui(ethQueryContractUI_t *msg, const context_t *context) {
+    // change title: public vs private offer
+    if (memcmp(context->address, NULL_ETH_ADDRESS, ADDRESS_LENGTH) == 0) {
+        strlcpy(msg->title, "Public bundle size", msg->titleLength);
+    } else {
+        strlcpy(msg->title, "Private bundle size", msg->titleLength);
+    }
+    if (context->array_length > 1) {
+        snprintf(msg->msg, msg->msgLength, "%d NFTs", context->array_length);
+    } else {
+        snprintf(msg->msg, msg->msgLength, "%d NFT", context->array_length);
+    }
+}
+
+// Set UI for Rental offer nonce
+static void set_rental_offer_fee_amount_ui(ethQueryContractUI_t *msg, const context_t *context) {
+    strlcpy(msg->title, "Entry fee", msg->titleLength);
+    amountToString(context->uint256_two, INT256_LENGTH, 18, "MUST ", msg->msg, msg->msgLength);
+    //amountToString(context->uint256_two, INT256_LENGTH, context->decimals, context->ticker, msg->msg, msg->msgLength);
+}
+
+// Set UI for Rental offer nonce
+static void set_rental_offer_nonce_ui(ethQueryContractUI_t *msg, const context_t *context) {
+    strlcpy(msg->title, "Offer Nonce", msg->titleLength);
+    amountToString(context->uint256_one, INT256_LENGTH, 0, "", msg->msg, msg->msgLength);
+}
+
+// Set UI for Rental token ID
+static void set_rental_token_id_ui(ethQueryContractUI_t *msg, const context_t *context) {
+    strlcpy(msg->title, "Ship ID", msg->titleLength);
+    amountToString(context->uint256_one, INT256_LENGTH, 0, "", msg->msg, msg->msgLength);
+}
+
+// Set UI for Rental basis points
+static void set_rental_basis_points_ui(ethQueryContractUI_t *msg, const context_t *context) {
+    strlcpy(msg->title, "Percentage lender", msg->titleLength);
+    amountToString(context->uint256_two, INT256_LENGTH, 2, "", msg->msg, msg->msgLength);
 }
 
 void handle_query_contract_ui(void *parameters) {
@@ -58,7 +98,7 @@ void handle_query_contract_ui(void *parameters) {
         case CRAFT:
             switch (msg->screenIndex) {
                 case 0:
-                    set_beneficiary_ui(msg, context);
+                    set_address_ui("Beneficiary", msg, context);
                     return;
                 case 1:
                     set_craft_booster_ui(msg, context);
@@ -67,7 +107,7 @@ void handle_query_contract_ui(void *parameters) {
         case REDEEM:
             switch (msg->screenIndex) {
                 case 0:
-                    set_beneficiary_ui(msg, context);
+                    set_address_ui("Beneficiary", msg, context);
                     return;
             }
         case GRIND:
@@ -80,6 +120,59 @@ void handle_query_contract_ui(void *parameters) {
             switch (msg->screenIndex) {
                 case 0:
                     set_game_id_ui(msg, context);
+                    return;
+            }
+        case RENTAL_CREATE_OFFER:
+            switch (msg->screenIndex) {
+                case 0:
+                    set_rental_offer_bundle_size_ui(msg, context);
+                    return;
+                case 1:
+                    set_rental_offer_fee_amount_ui(msg, context);
+                    return;
+                case 2:
+                    set_rental_offer_nonce_ui(msg, context);
+                    return;
+                case 3:
+                    set_address_ui("Beneficiary", msg, context);
+                    return;
+            }
+        case RENTAL_CANCEL_OFFER:
+            switch (msg->screenIndex) {
+                case 0:
+                    set_rental_offer_nonce_ui(msg, context);
+                    return;
+            }
+        case RENTAL_RENT:
+            switch (msg->screenIndex) {
+                case 0:
+                    set_rental_offer_bundle_size_ui(msg, context);
+                    return;
+                case 1:
+                    set_rental_offer_fee_amount_ui(msg, context);
+                    return;
+                case 2:
+                    set_address_ui("Offer From", msg, context);
+                    return;
+            }
+        case RENTAL_SUBLET:
+            switch (msg->screenIndex) {
+                case 0:
+                    set_rental_token_id_ui(msg, context);
+                    return;
+                case 1:
+                    set_address_ui("Tenant", msg, context);
+                    return;
+                case 2:
+                    set_rental_basis_points_ui(msg, context);
+                    return;
+            }
+        case RENTAL_END_RENTAL:
+        case RENTAL_END_RENTAL_PREMATURELY:
+        case RENTAL_END_SUBLET:
+            switch (msg->screenIndex) {
+                case 0:
+                    set_rental_token_id_ui(msg, context);
                     return;
             }
     }

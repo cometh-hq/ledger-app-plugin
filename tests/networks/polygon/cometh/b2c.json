@@ -44,6 +44,47 @@
                     "plugin": "Cometh"
 		        }
 	        }
+        },
+        {
+            "address": "0x5495bec6703adc6d395e50bb2c6a93bb4d2af56a",
+            "contractName": "IRentalProtocol",
+            "selectors": {
+                "0x1ae50184": {
+                    "erc20OfInterest": [ "offer.feeToken" ],
+                    "method": "preSignRentalOffer",
+                    "plugin": "Cometh"
+		        },
+                "0x6e09f420": {
+                    "erc20OfInterest": [],
+                    "method": "cancelRentalOffer",
+                    "plugin": "Cometh"
+		        },
+                "0x8d259eb1": {
+                    "erc20OfInterest": [ "offer.feeToken" ],
+                    "method": "rent",
+                    "plugin": "Cometh"
+		        },
+                "0x03388b4e": {
+                    "erc20OfInterest": [],
+                    "method": "sublet",
+                    "plugin": "Cometh"
+		        },
+                "0x1157decb": {
+                    "erc20OfInterest": [],
+                    "method": "endRental",
+                    "plugin": "Cometh"
+		        },
+                "0xe1649e8d": {
+                    "erc20OfInterest": [],
+                    "method": "endRentalPrematurely",
+                    "plugin": "Cometh"
+		        },
+                "0x1beddfdd": {
+                    "erc20OfInterest": [],
+                    "method": "endSublet",
+                    "plugin": "Cometh"
+		        }
+	        }
         }
     ],
     "name": "Cometh"

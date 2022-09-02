@@ -20,6 +20,27 @@ void handle_query_contract_id(void *parameters) {
         case GET_REWARD:
             strlcpy(msg->version, "Get Reward", msg->versionLength);
             break;
+        case RENTAL_CREATE_OFFER:
+            strlcpy(msg->version, "Rental - Create offer", msg->versionLength);
+            break;
+        case RENTAL_CANCEL_OFFER:
+            strlcpy(msg->version, "Rental - Cancel offer", msg->versionLength);
+            break;
+        case RENTAL_RENT:
+            strlcpy(msg->version, "Rental - Rent", msg->versionLength);
+            break;
+        case RENTAL_SUBLET:
+            strlcpy(msg->version, "Rental - Sublet", msg->versionLength);
+            break;
+        case RENTAL_END_RENTAL:
+            strlcpy(msg->version, "Rental - End rental", msg->versionLength);
+            break;
+        case RENTAL_END_RENTAL_PREMATURELY:
+            strlcpy(msg->version, "Rental - End rental prematurely", msg->versionLength);
+            break;
+        case RENTAL_END_SUBLET:
+            strlcpy(msg->version, "Rental - End sublet", msg->versionLength);
+            break;
         default:
             PRINTF("Selector Index: %d not supported\n", context->selectorIndex);
             msg->result = ETH_PLUGIN_RESULT_ERROR;

@@ -3,26 +3,18 @@
 const uint8_t BOOSTER_CARD_1[INT256_LENGTH] = { 0x00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2 };
 const uint8_t BOOSTER_CARD_5[INT256_LENGTH] = { 0x00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1 };
 
-static void handle_beneficiary(ethPluginProvideParameter_t *msg, context_t *context) {
-    copy_address(context->beneficiary, msg->parameter, sizeof(context->beneficiary));
-    printf_hex_array("BENEFICIARY: ", ADDRESS_LENGTH, context->beneficiary);
+static void handle_address(ethPluginProvideParameter_t *msg, context_t *context) {
+    copy_address(context->address, msg->parameter, sizeof(context->address));
+    printf_hex_array("BENEFICIARY: ", ADDRESS_LENGTH, context->address);
 }
 
 static void handle_craft(ethPluginProvideParameter_t *msg, context_t *context) {
-    if (context->go_to_offset) {
-        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
-        }
-        context->go_to_offset = false;
-    }
-
     PRINTF("[handle_craft] next_param=%d\n", context->next_param);
 
     switch (context->next_param) {
         case BENEFICIARY: // to
-            handle_beneficiary(msg, context);
+            handle_address(msg, context);
             context->next_param = CRAFT_RECIPE;
-            //context->go_to_offset = true;
             break;
         case CRAFT_RECIPE:  // recipeId
             // map recipeId to number of cards in the booster pack
@@ -47,18 +39,11 @@ static void handle_craft(ethPluginProvideParameter_t *msg, context_t *context) {
 }
 
 static void handle_redeem(ethPluginProvideParameter_t *msg, context_t *context) {
-    if (context->go_to_offset) {
-        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
-        }
-        context->go_to_offset = false;
-    }
-    
     PRINTF("[handle_redeem] next_param=%d\n", context->next_param);
 
     switch (context->next_param) {
         case BENEFICIARY: // to
-            handle_beneficiary(msg, context);
+            handle_address(msg, context);
             context->next_param = NONE;
             break;
         case NONE:
@@ -72,18 +57,11 @@ static void handle_redeem(ethPluginProvideParameter_t *msg, context_t *context) 
 }
 
 static void handle_grind(ethPluginProvideParameter_t *msg, context_t *context) {
-    if (context->go_to_offset) {
-        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
-        }
-        context->go_to_offset = false;
-    }
-    
     PRINTF("[handle_grind] next_param=%d\n", context->next_param);
 
     switch (context->next_param) {
         case ITEM_ID:
-            memcpy(context->item_id, msg->parameter, INT256_LENGTH);
+            memcpy(context->uint256_one, msg->parameter, INT256_LENGTH);
             context->next_param = NONE;
             break;
         case NONE:
@@ -98,6 +76,23 @@ static void handle_grind(ethPluginProvideParameter_t *msg, context_t *context) {
 
 static void handle_get_reward(ethPluginProvideParameter_t *msg, context_t *context) {
     PRINTF("[handle_get_reward] next_param=%d\n", context->next_param);
+    switch (context->next_param) {
+         case GAME_ID:
+            memcpy(context->uint256_one, msg->parameter, INT256_LENGTH);
+            context->next_param = NONE;
+            break;
+        case NONE:
+            break;
+        // Keep this
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_rental_create_offer(ethPluginProvideParameter_t *msg, context_t *context) {
+    PRINTF("[handle_rental_create_offer] next_param=%d\n", context->next_param);
 
     if (context->go_to_offset) {
         if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
@@ -106,23 +101,180 @@ static void handle_get_reward(ethPluginProvideParameter_t *msg, context_t *conte
         context->go_to_offset = false;
     }
 
-    /*
-    bytes32 id;
-    address shipAddress;
-    address player1Address;
-    uint256 player1ShipId;
-    address player2Address;
-    uint256 player2ShipId;
-    address winner;
-    */
+    switch (context->next_param) {
+        case RENTAL_OFFER_TAKER:
+            copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
+            context->skip++;
+            context->next_param = RENTAL_OFFER_FEE_TOKEN;
+            break;
+        case RENTAL_OFFER_FEE_TOKEN:
+            copy_address(context->rental_fee_token, msg->parameter, ADDRESS_LENGTH);
+            context->next_param = RENTAL_OFFER_FEE_AMOUNT;
+            break;
+        case RENTAL_OFFER_FEE_AMOUNT:
+            copy_parameter(context->uint256_two, msg->parameter, INT256_LENGTH);
+            context->next_param = RENTAL_OFFER_NONCE;
+            break;
+        case RENTAL_OFFER_NONCE:
+            copy_parameter(context->uint256_one, msg->parameter, INT256_LENGTH);
+            context->skip++;
+            context->next_param = RENTAL_OFFER_STRUCT_NFT_LENGTH;
+            break;
+        case RENTAL_OFFER_STRUCT_NFT_LENGTH:
+            context->array_length =
+                U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
+            context->offset = msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH;
+            context->next_param = NONE;
+        case NONE:
+            break;
+        // Keep this
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_rental_cancel_offer(ethPluginProvideParameter_t *msg, context_t *context) {
+    PRINTF("[handle_rental_cancel_offer] next_param=%d\n", context->next_param);
+    switch (context->next_param) {
+        case RENTAL_OFFER_NONCE:
+            copy_parameter(context->uint256_one, msg->parameter, INT256_LENGTH);
+            context->next_param = NONE;
+            break;
+        case NONE:
+            break;
+        // Keep this
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_rental_rent(ethPluginProvideParameter_t *msg, context_t *context) {
+    PRINTF("[handle_rental_rent] next_param=%d\n", context->next_param);
+
+    if (context->go_to_offset) {
+        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
+            return;
+        }
+        context->go_to_offset = false;
+    }
 
     switch (context->next_param) {
-        case GAME_STRUCT_OFFSET:
-            memcpy(context->game_id, msg->parameter, INT256_LENGTH);
-            context->next_param = GAME_ID;
+        case RENTAL_OFFER_MAKER:
+            copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
+            context->skip += 2; // skip taker and array offset
+            context->next_param = RENTAL_OFFER_FEE_TOKEN;
             break;
-        case GAME_ID:
-            memcpy(context->game_id, msg->parameter, INT256_LENGTH);
+        case RENTAL_OFFER_FEE_TOKEN:
+            copy_address(context->rental_fee_token, msg->parameter, ADDRESS_LENGTH);
+            context->next_param = RENTAL_OFFER_FEE_AMOUNT;
+            break;
+        case RENTAL_OFFER_FEE_AMOUNT:
+            copy_parameter(context->uint256_two, msg->parameter, INT256_LENGTH);
+            context->skip += 2; // skip nonce and deadline
+            context->next_param = RENTAL_OFFER_STRUCT_NFT_LENGTH;
+            break;
+        case RENTAL_OFFER_STRUCT_NFT_LENGTH:
+            context->array_length =
+                U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
+            context->offset = msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH;
+            context->next_param = NONE;
+        case NONE:
+            break;
+        // Keep this
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_rental_sublet(ethPluginProvideParameter_t *msg, context_t *context) {
+    PRINTF("[handle_rental_sublet] next_param=%d\n", context->next_param);
+
+    if (context->go_to_offset) {
+        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
+            return;
+        }
+        context->go_to_offset = false;
+    }
+
+    switch (context->next_param) {
+        case RENTAL_NFT_ADDRESS:
+            copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
+            context->next_param = RENTAL_NFT_TOKEN_ID;
+            break;
+        case RENTAL_NFT_TOKEN_ID:
+            copy_parameter(context->uint256_one, msg->parameter, INT256_LENGTH);
+            context->next_param = RENTAL_TENANT;
+            break;
+        case RENTAL_TENANT:
+            copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
+            context->next_param = RENTAL_BASIS_POINTS;
+            break;
+        case RENTAL_BASIS_POINTS:
+            copy_parameter(context->uint256_two, msg->parameter, INT256_LENGTH);
+            context->next_param = NONE;
+            break;
+        case NONE:
+            break;
+        // Keep this
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_rental_end_rental(ethPluginProvideParameter_t *msg, context_t *context) {
+    PRINTF("[handle_rental_end_rental] next_param=%d\n", context->next_param);
+
+    if (context->go_to_offset) {
+        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
+            return;
+        }
+        context->go_to_offset = false;
+    }
+
+    switch (context->next_param) {
+        case RENTAL_NFT_ADDRESS:
+            copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
+            context->next_param = RENTAL_NFT_TOKEN_ID;
+            break;
+        case RENTAL_NFT_TOKEN_ID:
+            copy_parameter(context->uint256_one, msg->parameter, INT256_LENGTH);
+            context->next_param = NONE;
+            break;
+        case NONE:
+            break;
+        // Keep this
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
+static void handle_rental_end_sublet(ethPluginProvideParameter_t *msg, context_t *context) {
+    PRINTF("[handle_rental_end_sublet] next_param=%d\n", context->next_param);
+
+    if (context->go_to_offset) {
+        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
+            return;
+        }
+        context->go_to_offset = false;
+    }
+
+    switch (context->next_param) {
+        case RENTAL_NFT_ADDRESS:
+            copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
+            context->next_param = RENTAL_NFT_TOKEN_ID;
+            break;
+        case RENTAL_NFT_TOKEN_ID:
+            copy_parameter(context->uint256_one, msg->parameter, INT256_LENGTH);
             context->next_param = NONE;
             break;
         case NONE:
@@ -175,6 +327,27 @@ void handle_provide_parameter(void *parameters) {
                 break;
             case GET_REWARD:
                 handle_get_reward(msg, context);
+                break;
+            case RENTAL_CREATE_OFFER:
+                handle_rental_create_offer(msg, context);
+                break;
+            case RENTAL_CANCEL_OFFER:
+                handle_rental_cancel_offer(msg, context);
+                break;
+            case RENTAL_RENT:
+                handle_rental_rent(msg, context);
+                break;
+            case RENTAL_SUBLET:
+                handle_rental_sublet(msg, context);
+                break;
+            case RENTAL_END_RENTAL:
+                handle_rental_end_rental(msg, context);
+                break;
+            case RENTAL_END_RENTAL_PREMATURELY:
+                handle_rental_end_rental(msg, context);
+                break;
+            case RENTAL_END_SUBLET:
+                handle_rental_end_sublet(msg, context);
                 break;
             default:
                 PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

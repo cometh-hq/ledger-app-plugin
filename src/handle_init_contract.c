@@ -53,7 +53,25 @@ void handle_init_contract(void *parameters) {
             context->next_param = ITEM_ID;
             break;
         case GET_REWARD:
-            context->next_param = GAME_STRUCT_OFFSET;
+            context->skip++;
+            context->next_param = GAME_ID;
+            break;
+        case RENTAL_CREATE_OFFER:
+            context->skip += 2; // skip struct header + maker address (the user signing this tx)
+            context->next_param = RENTAL_OFFER_TAKER;
+            break;
+        case RENTAL_CANCEL_OFFER:
+            context->next_param = RENTAL_OFFER_NONCE;
+            break;
+        case RENTAL_RENT:
+            context->skip += 3;
+            context->next_param = RENTAL_OFFER_MAKER;
+            break;
+        case RENTAL_SUBLET:
+        case RENTAL_END_RENTAL:
+        case RENTAL_END_RENTAL_PREMATURELY:
+        case RENTAL_END_SUBLET:
+            context->next_param = RENTAL_NFT_ADDRESS;
             break;
         // Keep this
         default:

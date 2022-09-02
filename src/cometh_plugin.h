@@ -6,12 +6,12 @@
 #include "debug_write.h"
 
 // Number of selectors defined in this plugin. Should match the enum `selector_t`.
-#define NUM_SELECTORS 4
+#define NUM_SELECTORS 11
 
 // Name of the plugin.
 #define PLUGIN_NAME "Cometh"
 
-#define PARAMETER_LENGTH     32
+#define PARAMETER_LENGTH     32 // 32 bytes
 
 // Plugin uses 0x00000 as a dummy address to reprecent ETH.
 extern const uint8_t NULL_ETH_ADDRESS[ADDRESS_LENGTH];
@@ -23,6 +23,13 @@ typedef enum {
     REDEEM,
     GRIND,
     GET_REWARD,
+    RENTAL_CREATE_OFFER,
+    RENTAL_CANCEL_OFFER,
+    RENTAL_RENT,
+    RENTAL_SUBLET,
+    RENTAL_END_RENTAL,
+    RENTAL_END_RENTAL_PREMATURELY,
+    RENTAL_END_SUBLET,
 } selector_t;
 
 // Enumeration used to parse the smart contract data.
@@ -30,8 +37,17 @@ typedef enum {
     BENEFICIARY,
     CRAFT_RECIPE,
     ITEM_ID,
-    GAME_STRUCT_OFFSET,
     GAME_ID,
+    RENTAL_OFFER_MAKER,
+    RENTAL_OFFER_TAKER,
+    RENTAL_OFFER_FEE_TOKEN,
+    RENTAL_OFFER_FEE_AMOUNT,
+    RENTAL_OFFER_NONCE,
+    RENTAL_OFFER_STRUCT_NFT_LENGTH,
+    RENTAL_NFT_ADDRESS,
+    RENTAL_NFT_TOKEN_ID,
+    RENTAL_TENANT,
+    RENTAL_BASIS_POINTS,
     NONE,
 } parameter;
 
@@ -40,13 +56,12 @@ extern const uint32_t COMETH_SELECTORS[NUM_SELECTORS];
 // Shared global memory with Ethereum app. Must be at most 5 * 32 bytes.
 typedef struct context_t {
     // For display.
-    //uint8_t lootbox_id[INT256_LENGTH];
-    //uint8_t amount_received[INT256_LENGTH];
-    //uint8_t recipe_id[INT256_LENGTH];
-    uint8_t beneficiary[ADDRESS_LENGTH];
+    uint8_t address[ADDRESS_LENGTH];
+    uint8_t uint256_one[INT256_LENGTH];
+    uint8_t uint256_two[INT256_LENGTH];
     uint8_t booster_card_count;
-    uint8_t item_id[INT256_LENGTH];
-    char game_id[INT256_LENGTH];
+    uint16_t array_length;
+    uint8_t rental_fee_token[ADDRESS_LENGTH];
 
     char ticker[MAX_TICKER_LEN];
     uint8_t token_found;
