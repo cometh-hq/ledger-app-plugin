@@ -1,7 +1,7 @@
 #include "cometh_plugin.h"
 
 // Set UI for address screen.
-static void set_address_ui(char* title, ethQueryContractUI_t *msg, context_t *context) {
+static void set_address_ui(char *title, ethQueryContractUI_t *msg, context_t *context) {
     strlcpy(msg->title, title, msg->titleLength);
 
     // Prefix the address with `0x`.
@@ -62,7 +62,6 @@ static void set_rental_offer_bundle_size_ui(ethQueryContractUI_t *msg, const con
 static void set_rental_offer_fee_amount_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Entry fee", msg->titleLength);
     amountToString(context->uint256_two, INT256_LENGTH, 18, "MUST ", msg->msg, msg->msgLength);
-    //amountToString(context->uint256_two, INT256_LENGTH, context->decimals, context->ticker, msg->msg, msg->msgLength);
 }
 
 // Set UI for Rental offer nonce

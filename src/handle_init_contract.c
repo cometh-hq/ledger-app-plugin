@@ -57,7 +57,7 @@ void handle_init_contract(void *parameters) {
             context->next_param = GAME_ID;
             break;
         case RENTAL_CREATE_OFFER:
-            context->skip += 2; // skip struct header + maker address (the user signing this tx)
+            context->skip += 2;  // skip struct header + maker address (the user signing this tx)
             context->next_param = RENTAL_OFFER_TAKER;
             break;
         case RENTAL_CANCEL_OFFER:

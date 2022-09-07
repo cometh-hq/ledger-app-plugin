@@ -1,7 +1,11 @@
 #include "cometh_plugin.h"
 
-const uint8_t BOOSTER_CARD_1[INT256_LENGTH] = { 0x00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2 };
-const uint8_t BOOSTER_CARD_5[INT256_LENGTH] = { 0x00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1 };
+const uint8_t BOOSTER_CARD_1[INT256_LENGTH] = {
+    0x00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0,  0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x2};
+const uint8_t BOOSTER_CARD_5[INT256_LENGTH] = {
+    0x00, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0,
+    0x0,  0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x1};
 
 static void handle_address(ethPluginProvideParameter_t *msg, context_t *context) {
     copy_address(context->address, msg->parameter, sizeof(context->address));
@@ -12,7 +16,7 @@ static void handle_craft(ethPluginProvideParameter_t *msg, context_t *context) {
     PRINTF("[handle_craft] next_param=%d\n", context->next_param);
 
     switch (context->next_param) {
-        case BENEFICIARY: // to
+        case BENEFICIARY:  // to
             handle_address(msg, context);
             context->next_param = CRAFT_RECIPE;
             break;
@@ -42,7 +46,7 @@ static void handle_redeem(ethPluginProvideParameter_t *msg, context_t *context) 
     PRINTF("[handle_redeem] next_param=%d\n", context->next_param);
 
     switch (context->next_param) {
-        case BENEFICIARY: // to
+        case BENEFICIARY:  // to
             handle_address(msg, context);
             context->next_param = NONE;
             break;
@@ -77,7 +81,7 @@ static void handle_grind(ethPluginProvideParameter_t *msg, context_t *context) {
 static void handle_get_reward(ethPluginProvideParameter_t *msg, context_t *context) {
     PRINTF("[handle_get_reward] next_param=%d\n", context->next_param);
     switch (context->next_param) {
-         case GAME_ID:
+        case GAME_ID:
             memcpy(context->uint256_one, msg->parameter, INT256_LENGTH);
             context->next_param = NONE;
             break;
@@ -165,7 +169,7 @@ static void handle_rental_rent(ethPluginProvideParameter_t *msg, context_t *cont
     switch (context->next_param) {
         case RENTAL_OFFER_MAKER:
             copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
-            context->skip += 2; // skip taker and array offset
+            context->skip += 2;  // skip taker and array offset
             context->next_param = RENTAL_OFFER_FEE_TOKEN;
             break;
         case RENTAL_OFFER_FEE_TOKEN:
@@ -174,7 +178,7 @@ static void handle_rental_rent(ethPluginProvideParameter_t *msg, context_t *cont
             break;
         case RENTAL_OFFER_FEE_AMOUNT:
             copy_parameter(context->uint256_two, msg->parameter, INT256_LENGTH);
-            context->skip += 2; // skip nonce and deadline
+            context->skip += 2;  // skip nonce and deadline
             context->next_param = RENTAL_OFFER_STRUCT_NFT_LENGTH;
             break;
         case RENTAL_OFFER_STRUCT_NFT_LENGTH:
