@@ -4,10 +4,10 @@ on:
   workflow_dispatch:
   push:
     branches:
-      - main
+      - master
   pull_request:
     branches:
-      - main
+      - master
 
 jobs:
   job_build_plugin_nano_s:
@@ -17,9 +17,13 @@ jobs:
       image: ghcr.io/ledgerhq/ledger-app-builder/ledger-app-builder:latest
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+      - name: Clone SDK
+        uses: actions/checkout@v2
         with:
-          submodules: true
+          repository: LedgerHQ/ethereum-plugin-sdk
+          path: ethereum-plugin-sdk
+          ref: ${{ github.base_ref || github.ref_name }}
       - name: Build plugin for Nano S
         run: |
           make clean
@@ -32,9 +36,13 @@ jobs:
       image: ghcr.io/ledgerhq/ledger-app-builder/ledger-app-builder:latest
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+      - name: Clone SDK
+        uses: actions/checkout@v2
         with:
-          submodules: true
+          repository: LedgerHQ/ethereum-plugin-sdk
+          path: ethereum-plugin-sdk
+          ref: ${{ github.base_ref || github.ref_name }}
       - name: Build plugin for Nano S Plus
         run: |
           make clean
@@ -47,9 +55,13 @@ jobs:
       image: ghcr.io/ledgerhq/ledger-app-builder/ledger-app-builder:latest
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+      - name: Clone SDK
+        uses: actions/checkout@v2
         with:
-          submodules: true
+          repository: LedgerHQ/ethereum-plugin-sdk
+          path: ethereum-plugin-sdk
+          ref: ${{ github.base_ref || github.ref_name }}
       - name: Build plugin for Nano X
         run: |
           make clean
@@ -62,9 +74,13 @@ jobs:
       image: ghcr.io/ledgerhq/ledger-app-builder/ledger-app-builder:latest
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+      - name: Clone SDK
+        uses: actions/checkout@v2
         with:
-          submodules: true
+          repository: LedgerHQ/ethereum-plugin-sdk
+          path: ethereum-plugin-sdk
+          ref: ${{ github.base_ref || github.ref_name }}
       - name: Build plugin
         run: |
           make clean
@@ -87,9 +103,13 @@ jobs:
       image: ghcr.io/ledgerhq/ledger-app-builder/ledger-app-builder:latest
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+      - name: Clone SDK
+        uses: actions/checkout@v2
         with:
-          submodules: true
+          repository: LedgerHQ/ethereum-plugin-sdk
+          path: ethereum-plugin-sdk
+          ref: ${{ github.base_ref || github.ref_name }}
       - name: Build plugin
         run: |
           make clean
@@ -111,9 +131,13 @@ jobs:
       image: ghcr.io/ledgerhq/ledger-app-builder/ledger-app-builder:latest
     steps:
       - name: Clone
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+      - name: Clone SDK
+        uses: actions/checkout@v2
         with:
-          submodules: true
+          repository: LedgerHQ/ethereum-plugin-sdk
+          path: ethereum-plugin-sdk
+          ref: ${{ github.base_ref || github.ref_name }}
       - name: Build plugin
         run: |
           make clean
@@ -134,10 +158,12 @@ jobs:
     container:
       image: ghcr.io/ledgerhq/ledger-app-builder/ledger-app-builder:latest
     steps:
-      - name: Clone
-        uses: actions/checkout@v3
+      - name: Checkout app-ethereum
+        uses: actions/checkout@v2
         with:
-          submodules: true
+          repository: LedgerHQ/app-ethereum
+          ref: ${{ github.base_ref || github.ref_name }}
+          submodules: recursive
       - name: Build ethereum
         run: |
           make clean
@@ -158,10 +184,12 @@ jobs:
     container:
       image: ghcr.io/ledgerhq/ledger-app-builder/ledger-app-builder:latest
     steps:
-      - name: Clone
-        uses: actions/checkout@v3
+      - name: Checkout app-ethereum
+        uses: actions/checkout@v2
         with:
-          submodules: true
+          repository: LedgerHQ/app-ethereum
+          ref: ${{ github.base_ref || github.ref_name }}
+          submodules: recursive
       - name: Build ethereum
         run: |
           make clean
@@ -182,10 +210,12 @@ jobs:
     container:
       image: ghcr.io/ledgerhq/ledger-app-builder/ledger-app-builder:latest
     steps:
-      - name: Clone
-        uses: actions/checkout@v3
+      - name: Checkout app-ethereum
+        uses: actions/checkout@v2
         with:
-          submodules: true
+          repository: LedgerHQ/app-ethereum
+          ref: ${{ github.base_ref || github.ref_name }}
+          submodules: recursive
       - name: Build ethereum
         run: |
           make clean
