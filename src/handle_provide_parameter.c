@@ -98,13 +98,6 @@ static void handle_get_reward(ethPluginProvideParameter_t *msg, context_t *conte
 static void handle_rental_create_offer(ethPluginProvideParameter_t *msg, context_t *context) {
     PRINTF("[handle_rental_create_offer] next_param=%d\n", context->next_param);
 
-    if (context->go_to_offset) {
-        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
-        }
-        context->go_to_offset = false;
-    }
-
     switch (context->next_param) {
         case RENTAL_OFFER_TAKER:
             copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
@@ -127,7 +120,6 @@ static void handle_rental_create_offer(ethPluginProvideParameter_t *msg, context
         case RENTAL_OFFER_STRUCT_NFT_LENGTH:
             context->array_length =
                 U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
-            context->offset = msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH;
             context->next_param = NONE;
         case NONE:
             break;
@@ -159,13 +151,6 @@ static void handle_rental_cancel_offer(ethPluginProvideParameter_t *msg, context
 static void handle_rental_rent(ethPluginProvideParameter_t *msg, context_t *context) {
     PRINTF("[handle_rental_rent] next_param=%d\n", context->next_param);
 
-    if (context->go_to_offset) {
-        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
-        }
-        context->go_to_offset = false;
-    }
-
     switch (context->next_param) {
         case RENTAL_OFFER_MAKER:
             copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
@@ -184,7 +169,6 @@ static void handle_rental_rent(ethPluginProvideParameter_t *msg, context_t *cont
         case RENTAL_OFFER_STRUCT_NFT_LENGTH:
             context->array_length =
                 U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
-            context->offset = msg->parameterOffset - SELECTOR_SIZE + PARAMETER_LENGTH;
             context->next_param = NONE;
         case NONE:
             break;
@@ -198,13 +182,6 @@ static void handle_rental_rent(ethPluginProvideParameter_t *msg, context_t *cont
 
 static void handle_rental_sublet(ethPluginProvideParameter_t *msg, context_t *context) {
     PRINTF("[handle_rental_sublet] next_param=%d\n", context->next_param);
-
-    if (context->go_to_offset) {
-        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
-        }
-        context->go_to_offset = false;
-    }
 
     switch (context->next_param) {
         case RENTAL_NFT_ADDRESS:
@@ -234,14 +211,7 @@ static void handle_rental_sublet(ethPluginProvideParameter_t *msg, context_t *co
 
 static void handle_rental_end_rental_or_end_sublet(ethPluginProvideParameter_t *msg,
                                                    context_t *context) {
-    PRINTF("[handle_rental_end_rental] next_param=%d\n", context->next_param);
-
-    if (context->go_to_offset) {
-        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
-        }
-        context->go_to_offset = false;
-    }
+    PRINTF("[handle_rental_end_rental_or_end_sublet] next_param=%d\n", context->next_param);
 
     switch (context->next_param) {
         case RENTAL_NFT_ADDRESS:
@@ -279,17 +249,8 @@ void handle_provide_parameter(void *parameters) {
         // Skip this step, and don't forget to decrease skipping counter.
         context->skip--;
     } else {
-        if ((context->offset) && msg->parameterOffset != context->checkpoint + context->offset) {
-            PRINTF("offset: %d, checkpoint: %d, parameterOffset: %d\n",
-                   context->offset,
-                   context->checkpoint,
-                   msg->parameterOffset);
-            return;
-        }
-
         PRINTF("Dealing with selector %d\n", context->selectorIndex);
 
-        context->offset = 0;  // Reset offset
         switch (context->selectorIndex) {
             case CRAFT:
                 handle_craft(msg, context);
