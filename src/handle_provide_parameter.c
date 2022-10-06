@@ -65,7 +65,7 @@ static void handle_grind(ethPluginProvideParameter_t *msg, context_t *context) {
 
     switch (context->next_param) {
         case ITEM_ID:
-            memcpy(context->uint256_one, msg->parameter, INT256_LENGTH);
+            copy_parameter(context->uint256_one, msg->parameter, INT256_LENGTH);
             context->next_param = NONE;
             break;
         case NONE:
@@ -82,7 +82,7 @@ static void handle_get_reward(ethPluginProvideParameter_t *msg, context_t *conte
     PRINTF("[handle_get_reward] next_param=%d\n", context->next_param);
     switch (context->next_param) {
         case GAME_ID:
-            memcpy(context->uint256_one, msg->parameter, INT256_LENGTH);
+            copy_parameter(context->uint256_one, msg->parameter, INT256_LENGTH);
             context->next_param = NONE;
             break;
         case NONE:
