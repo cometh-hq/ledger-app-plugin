@@ -208,7 +208,6 @@ static void handle_rental_sublet(ethPluginProvideParameter_t *msg, context_t *co
 
     switch (context->next_param) {
         case RENTAL_NFT_ADDRESS:
-            copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
             context->next_param = RENTAL_NFT_TOKEN_ID;
             break;
         case RENTAL_NFT_TOKEN_ID:
