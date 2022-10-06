@@ -232,37 +232,9 @@ static void handle_rental_sublet(ethPluginProvideParameter_t *msg, context_t *co
     }
 }
 
-static void handle_rental_end_rental(ethPluginProvideParameter_t *msg, context_t *context) {
+static void handle_rental_end_rental_or_end_sublet(ethPluginProvideParameter_t *msg,
+                                                   context_t *context) {
     PRINTF("[handle_rental_end_rental] next_param=%d\n", context->next_param);
-
-    if (context->go_to_offset) {
-        if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
-            return;
-        }
-        context->go_to_offset = false;
-    }
-
-    switch (context->next_param) {
-        case RENTAL_NFT_ADDRESS:
-            copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
-            context->next_param = RENTAL_NFT_TOKEN_ID;
-            break;
-        case RENTAL_NFT_TOKEN_ID:
-            copy_parameter(context->uint256_one, msg->parameter, INT256_LENGTH);
-            context->next_param = NONE;
-            break;
-        case NONE:
-            break;
-        // Keep this
-        default:
-            PRINTF("Param not supported: %d\n", context->next_param);
-            msg->result = ETH_PLUGIN_RESULT_ERROR;
-            break;
-    }
-}
-
-static void handle_rental_end_sublet(ethPluginProvideParameter_t *msg, context_t *context) {
-    PRINTF("[handle_rental_end_sublet] next_param=%d\n", context->next_param);
 
     if (context->go_to_offset) {
         if (msg->parameterOffset != context->offset + SELECTOR_SIZE) {
@@ -344,13 +316,9 @@ void handle_provide_parameter(void *parameters) {
                 handle_rental_sublet(msg, context);
                 break;
             case RENTAL_END_RENTAL:
-                handle_rental_end_rental(msg, context);
-                break;
             case RENTAL_END_RENTAL_PREMATURELY:
-                handle_rental_end_rental(msg, context);
-                break;
             case RENTAL_END_SUBLET:
-                handle_rental_end_sublet(msg, context);
+                handle_rental_end_rental_or_end_sublet(msg, context);
                 break;
             default:
                 PRINTF("Selector Index not supported: %d\n", context->selectorIndex);

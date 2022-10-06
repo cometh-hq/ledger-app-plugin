@@ -67,7 +67,7 @@ typedef struct context_t {
     uint8_t token_found;
 
     // For parsing data.
-    uint16_t offset;  // Offset at which the array or struct starts.
+    uint16_t offset;
     uint16_t checkpoint;
     uint8_t skip;
     uint8_t decimals;
