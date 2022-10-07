@@ -70,7 +70,6 @@ typedef struct context_t {
     uint8_t skip;
     uint8_t decimals;
     uint8_t next_param;  // Set to be the next param we expect to parse.
-    uint8_t tokens_found;
 
     // For both parsing and display.
     selector_t selectorIndex;

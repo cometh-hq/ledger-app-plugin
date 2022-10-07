@@ -24,12 +24,14 @@ void handle_finalize(void *parameters) {
                 // the private offer is
                 msg->numScreens += 1;
             }
+            msg->tokenLookup1 = context->rental_fee_token;
             break;
         case RENTAL_CANCEL_OFFER:
             msg->numScreens = 1;  // nonce
             break;
         case RENTAL_RENT:
             msg->numScreens = 3;  // bundle size + entry free + offer maker
+            msg->tokenLookup1 = context->rental_fee_token;
             break;
         case RENTAL_SUBLET:
             msg->numScreens = 3;  // ship ID + tenant + basis points
@@ -40,8 +42,6 @@ void handle_finalize(void *parameters) {
             msg->numScreens = 1;  // ship ID
             break;
     }
-
-    msg->tokenLookup1 = context->rental_fee_token;
 
     msg->uiType = ETH_UI_TYPE_GENERIC;
     msg->result = ETH_PLUGIN_RESULT_OK;
