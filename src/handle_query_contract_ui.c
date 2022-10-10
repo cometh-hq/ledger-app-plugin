@@ -45,7 +45,7 @@ static void set_game_id_ui(ethQueryContractUI_t *msg, const context_t *context) 
 
 // Set UI for Rental offer nonce
 static void set_rental_offer_bundle_size_ui(ethQueryContractUI_t *msg, const context_t *context) {
-    // change title: public vs private offer
+    // set title of the screen depending on public vs private bundle
     if (memcmp(context->address, NULL_ETH_ADDRESS, ADDRESS_LENGTH) == 0) {
         strlcpy(msg->title, "Public bundle size", msg->titleLength);
     } else {
@@ -61,7 +61,20 @@ static void set_rental_offer_bundle_size_ui(ethQueryContractUI_t *msg, const con
 // Set UI for Rental offer nonce
 static void set_rental_offer_fee_amount_ui(ethQueryContractUI_t *msg, const context_t *context) {
     strlcpy(msg->title, "Entry fee", msg->titleLength);
-    amountToString(context->uint256_two, INT256_LENGTH, 18, "MUST ", msg->msg, msg->msgLength);
+
+    uint8_t decimals = context->decimals;
+    const char *ticker = context->ticker;
+
+    if (context->token_found) {
+        amountToString(context->uint256_two,
+                       sizeof(context->uint256_two),
+                       decimals,
+                       ticker,
+                       msg->msg,
+                       msg->msgLength);
+    } else {
+        strlcpy(msg->msg, "Unknown token", msg->msgLength);
+    }
 }
 
 // Set UI for Rental offer nonce

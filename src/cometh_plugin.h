@@ -67,14 +67,9 @@ typedef struct context_t {
     uint8_t token_found;
 
     // For parsing data.
-    uint16_t offset;  // Offset at which the array or struct starts.
-    uint16_t checkpoint;
     uint8_t skip;
     uint8_t decimals;
     uint8_t next_param;  // Set to be the next param we expect to parse.
-    uint8_t tokens_found;
-    bool go_to_offset;  // If set, will force the parsing to iterate through parameters until
-                        // `offset` is reached.
 
     // For both parsing and display.
     selector_t selectorIndex;
