@@ -119,7 +119,7 @@ static void handle_rental_create_offer(ethPluginProvideParameter_t *msg, context
             break;
         case RENTAL_OFFER_STRUCT_NFT_LENGTH:
             context->array_length =
-                U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
+                U4BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
             context->next_param = NONE;
         case NONE:
             break;
@@ -168,7 +168,7 @@ static void handle_rental_rent(ethPluginProvideParameter_t *msg, context_t *cont
             break;
         case RENTAL_OFFER_STRUCT_NFT_LENGTH:
             context->array_length =
-                U2BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
+                U4BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
             context->next_param = NONE;
         case NONE:
             break;

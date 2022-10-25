@@ -60,7 +60,7 @@ typedef struct context_t {
     uint8_t uint256_one[INT256_LENGTH];
     uint8_t uint256_two[INT256_LENGTH];
     uint8_t booster_card_count;
-    uint16_t array_length;
+    uint32_t array_length;
     uint8_t rental_fee_token[ADDRESS_LENGTH];
 
     char ticker[MAX_TICKER_LEN];
