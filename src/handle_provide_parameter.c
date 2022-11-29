@@ -95,6 +95,31 @@ static void handle_get_reward(ethPluginProvideParameter_t *msg, context_t *conte
     }
 }
 
+static void handle_welcome_pack(ethPluginProvideParameter_t *msg, context_t *context) {
+    PRINTF("[handle_welcome_pack] next_param=%d\n", context->next_param);
+    switch (context->next_param) {
+        case PURCHASE_TOKEN:
+            copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
+            context->next_param = PURCHASE_PRICE;
+            break;
+        case PURCHASE_PRICE:
+            copy_parameter(context->uint256_one, msg->parameter, INT256_LENGTH);
+            context->next_param = PURCHASE_QUANTITY;
+            break;
+        case PURCHASE_QUANTITY:
+            copy_parameter(context->uint256_two, msg->parameter, INT256_LENGTH);
+            context->next_param = NONE;
+            break;
+        case NONE:
+            break;
+        // Keep this
+        default:
+            PRINTF("Param not supported: %d\n", context->next_param);
+            msg->result = ETH_PLUGIN_RESULT_ERROR;
+            break;
+    }
+}
+
 static void handle_rental_create_offer(ethPluginProvideParameter_t *msg, context_t *context) {
     PRINTF("[handle_rental_create_offer] next_param=%d\n", context->next_param);
 
@@ -118,9 +143,11 @@ static void handle_rental_create_offer(ethPluginProvideParameter_t *msg, context
             context->next_param = RENTAL_OFFER_STRUCT_NFT_LENGTH;
             break;
         case RENTAL_OFFER_STRUCT_NFT_LENGTH:
-            context->array_length =
-                U4BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
+            if (!U2BE_from_parameter(msg->parameter, &context->array_length)) {
+                msg->result = ETH_PLUGIN_RESULT_ERROR;
+            }
             context->next_param = NONE;
+            break;
         case NONE:
             break;
         // Keep this
@@ -167,9 +194,11 @@ static void handle_rental_rent(ethPluginProvideParameter_t *msg, context_t *cont
             context->next_param = RENTAL_OFFER_STRUCT_NFT_LENGTH;
             break;
         case RENTAL_OFFER_STRUCT_NFT_LENGTH:
-            context->array_length =
-                U4BE(msg->parameter, PARAMETER_LENGTH - sizeof(context->array_length));
+            if (!U2BE_from_parameter(msg->parameter, &context->array_length)) {
+                msg->result = ETH_PLUGIN_RESULT_ERROR;
+            }
             context->next_param = NONE;
+            break;
         case NONE:
             break;
         // Keep this
@@ -263,6 +292,9 @@ void handle_provide_parameter(void *parameters) {
                 break;
             case GET_REWARD:
                 handle_get_reward(msg, context);
+                break;
+            case WELCOME_PACK_PURCHASE:
+                handle_welcome_pack(msg, context);
                 break;
             case RENTAL_CREATE_OFFER:
                 handle_rental_create_offer(msg, context);

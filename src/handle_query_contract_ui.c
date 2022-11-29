@@ -43,6 +43,32 @@ static void set_game_id_ui(ethQueryContractUI_t *msg, const context_t *context) 
     strlcpy(msg->msg, context->uint256_one, msg->msgLength);
 }
 
+// Set UI for welcome pack purchase
+static void set_welcome_pack_purchase_price_ui(ethQueryContractUI_t *msg,
+                                               const context_t *context) {
+    strlcpy(msg->title, "Price", msg->titleLength);
+
+    uint8_t decimals = context->decimals;
+    const char *ticker = context->ticker;
+
+    if (context->token_found) {
+        amountToString(context->uint256_one,
+                       sizeof(context->uint256_one),
+                       decimals,
+                       ticker,
+                       msg->msg,
+                       msg->msgLength);
+    } else {
+        strlcpy(msg->msg, "Unknown token", msg->msgLength);
+    }
+}
+
+static void set_welcome_pack_purchase_quantity_ui(ethQueryContractUI_t *msg,
+                                                  const context_t *context) {
+    strlcpy(msg->title, "Quantity", msg->titleLength);
+    amountToString(context->uint256_two, INT256_LENGTH, 0, "Boosters ", msg->msg, msg->msgLength);
+}
+
 // Set UI for Rental offer nonce
 static void set_rental_offer_bundle_size_ui(ethQueryContractUI_t *msg, const context_t *context) {
     // set title of the screen depending on public vs private bundle
@@ -132,6 +158,15 @@ void handle_query_contract_ui(void *parameters) {
             switch (msg->screenIndex) {
                 case 0:
                     set_game_id_ui(msg, context);
+                    return;
+            }
+        case WELCOME_PACK_PURCHASE:
+            switch (msg->screenIndex) {
+                case 0:
+                    set_welcome_pack_purchase_price_ui(msg, context);
+                    return;
+                case 1:
+                    set_welcome_pack_purchase_quantity_ui(msg, context);
                     return;
             }
         case RENTAL_CREATE_OFFER:

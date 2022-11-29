@@ -6,7 +6,7 @@
 #include "debug_write.h"
 
 // Number of selectors defined in this plugin. Should match the enum `selector_t`.
-#define NUM_SELECTORS 11
+#define NUM_SELECTORS 12
 
 // Name of the plugin.
 #define PLUGIN_NAME "Cometh"
@@ -23,6 +23,7 @@ typedef enum {
     REDEEM,
     GRIND,
     GET_REWARD,
+    WELCOME_PACK_PURCHASE,
     RENTAL_CREATE_OFFER,
     RENTAL_CANCEL_OFFER,
     RENTAL_RENT,
@@ -38,6 +39,9 @@ typedef enum {
     CRAFT_RECIPE,
     ITEM_ID,
     GAME_ID,
+    PURCHASE_TOKEN,
+    PURCHASE_PRICE,
+    PURCHASE_QUANTITY,
     RENTAL_OFFER_MAKER,
     RENTAL_OFFER_TAKER,
     RENTAL_OFFER_FEE_TOKEN,
@@ -60,7 +64,7 @@ typedef struct context_t {
     uint8_t uint256_one[INT256_LENGTH];
     uint8_t uint256_two[INT256_LENGTH];
     uint8_t booster_card_count;
-    uint32_t array_length;
+    uint16_t array_length;
     uint8_t rental_fee_token[ADDRESS_LENGTH];
 
     char ticker[MAX_TICKER_LEN];
