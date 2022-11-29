@@ -46,6 +46,17 @@
 	        }
         },
         {
+            "address": "0x6ee0fd8c477509b56c859d7dd213f92654379a35",
+            "contractName": "WelcomePackHelper",
+            "selectors": {
+                "0x28dec395": {
+                    "erc20OfInterest": [ "_purchaseToken" ],
+                    "method": "purchaseWithPermit",
+                    "plugin": "Cometh"
+		        }
+	        }
+        },
+        {
             "address": "0x5495bec6703adc6d395e50bb2c6a93bb4d2af56a",
             "contractName": "IRentalProtocol",
             "selectors": {

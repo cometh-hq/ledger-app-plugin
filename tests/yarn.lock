@@ -1579,10 +1579,10 @@
     "@jridgewell/resolve-uri" "^3.0.3"
     "@jridgewell/sourcemap-codec" "^1.4.10"
 
-"@ledgerhq/cryptoassets@^6.36.0":
-  version "6.36.0"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/cryptoassets/-/cryptoassets-6.36.0.tgz#f304ac0cb9c3bbc37e29f3175d79c5e3a0461894"
-  integrity sha512-oQwP4ToVz6FT6cN2WcTgyEDYZ/keDVNlW1s2AD+cgi2Xbb74kd/732iY6dE5NG5ZWxiSv2tpAgfce0kzStOb/Q==
+"@ledgerhq/cryptoassets@^6.36.1":
+  version "6.36.1"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/cryptoassets/-/cryptoassets-6.36.1.tgz#690edf56314f1d781b980f07de16bc2f52c07329"
+  integrity sha512-e/ujbUxSWECicalpZrWqime+/i5QABuJVzDmaWNJJfXze1zleaaIzAelSjZcm4dpqZXjrZDyBuLBq5Y+PwFBHg==
   dependencies:
     invariant "2"
 
@@ -1616,14 +1616,14 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/errors/-/errors-6.11.1.tgz#a8a81bda6d28ac43c757e109b1ff079ddeec54a6"
   integrity sha512-HT1PFvNrejcN5z3ba6xikacIdHWMkjBeE9U5FFoGHhaKBKGjC74mnCeEo0/oJunyuVId+9mhGnv6lrBl6Mkqdg==
 
-"@ledgerhq/hw-app-eth@6.29.10":
-  version "6.29.10"
-  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-app-eth/-/hw-app-eth-6.29.10.tgz#63450c83d1ad00a94c8b100ef791d3985f7746be"
-  integrity sha512-MYamd2mqQTkPaFO0GWPXyTAjlCrocLAvyK4Tio+IRMUG9LeSBTRRF9y20U5z7oS/R7HYe66FmdwcalI2b5mzQA==
+"@ledgerhq/hw-app-eth@6.29.11":
+  version "6.29.11"
+  resolved "https://registry.yarnpkg.com/@ledgerhq/hw-app-eth/-/hw-app-eth-6.29.11.tgz#30673e2087ed7aacf442b8594efb908255e8fdc6"
+  integrity sha512-9rdHy01U34Gpuq53Vba02O4BohEVcmHRqUNA2OfNZCs5DCaxxHh/bfETEpjrBGVP0M0IrHSPeMgNaIvWsWjLqQ==
   dependencies:
     "@ethersproject/abi" "^5.5.0"
     "@ethersproject/rlp" "^5.5.0"
-    "@ledgerhq/cryptoassets" "^6.36.0"
+    "@ledgerhq/cryptoassets" "^6.36.1"
     "@ledgerhq/errors" "^6.11.1"
     "@ledgerhq/hw-transport" "^6.27.6"
     "@ledgerhq/hw-transport-mocker" "^6.27.6"
