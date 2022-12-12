@@ -56,6 +56,9 @@ void handle_init_contract(void *parameters) {
             context->skip = 1;
             context->next_param = GAME_ID;
             break;
+        case WELCOME_PACK_PURCHASE:
+            context->next_param = PURCHASE_TOKEN;
+            break;
         case RENTAL_CREATE_OFFER:
             context->skip = 2;  // skip struct header + maker address (the user signing this tx)
             context->next_param = RENTAL_OFFER_TAKER;

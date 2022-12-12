@@ -17,6 +17,10 @@ void handle_finalize(void *parameters) {
         case GET_REWARD:
             msg->numScreens = 1;  // game id
             break;
+        case WELCOME_PACK_PURCHASE:
+            msg->numScreens = 2;  // purchase price + quantity
+            msg->tokenLookup1 = context->address;
+            break;
         case RENTAL_CREATE_OFFER:
             msg->numScreens = 3;  // bundle size + entry free + nonce
             if (memcmp(context->address, NULL_ETH_ADDRESS, ADDRESS_LENGTH) != 0) {

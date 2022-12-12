@@ -20,6 +20,9 @@ void handle_query_contract_id(void *parameters) {
         case GET_REWARD:
             strlcpy(msg->version, "Get Reward", msg->versionLength);
             break;
+        case WELCOME_PACK_PURCHASE:
+            strlcpy(msg->version, "Welcome Pack Purchase", msg->versionLength);
+            break;
         case RENTAL_CREATE_OFFER:
             strlcpy(msg->version, "Rental - Create offer", msg->versionLength);
             break;
