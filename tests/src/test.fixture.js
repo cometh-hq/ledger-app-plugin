@@ -184,6 +184,7 @@ async function processTransaction(eth, sim, steps, label, rawTxHex, srlTx = "") 
  * @param {boolean} signed The plugin is already signed and existing in Ledger database
  */
 function processTest(device, contractName, testLabel, testDirSuffix, rawTxHex, signed, serializedTx, testNetwork) {
+    jest.setTimeout(10000);
     test(
       "[" + contractName + "] - " + device.label + " - " + testLabel,
       zemu(device.name, async (sim, eth) => {
