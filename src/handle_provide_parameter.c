@@ -213,9 +213,6 @@ static void handle_rental_sublet(ethPluginProvideParameter_t *msg, context_t *co
     PRINTF("[handle_rental_sublet] next_param=%d\n", context->next_param);
 
     switch (context->next_param) {
-        case RENTAL_NFT_ADDRESS:
-            context->next_param = RENTAL_NFT_TOKEN_ID;
-            break;
         case RENTAL_NFT_TOKEN_ID:
             copy_parameter(context->uint256_one, msg->parameter, INT256_LENGTH);
             context->next_param = RENTAL_TENANT;
@@ -243,10 +240,6 @@ static void handle_rental_end_rental_or_end_sublet(ethPluginProvideParameter_t *
     PRINTF("[handle_rental_end_rental_or_end_sublet] next_param=%d\n", context->next_param);
 
     switch (context->next_param) {
-        case RENTAL_NFT_ADDRESS:
-            copy_address(context->address, msg->parameter, ADDRESS_LENGTH);
-            context->next_param = RENTAL_NFT_TOKEN_ID;
-            break;
         case RENTAL_NFT_TOKEN_ID:
             copy_parameter(context->uint256_one, msg->parameter, INT256_LENGTH);
             context->next_param = NONE;

@@ -74,7 +74,8 @@ void handle_init_contract(void *parameters) {
         case RENTAL_END_RENTAL:
         case RENTAL_END_RENTAL_PREMATURELY:
         case RENTAL_END_SUBLET:
-            context->next_param = RENTAL_NFT_ADDRESS;
+            context->skip = 1;  // skip NFT address
+            context->next_param = RENTAL_NFT_TOKEN_ID;
             break;
         // Keep this
         default:
